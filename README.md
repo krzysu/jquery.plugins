@@ -8,4 +8,3 @@ In the pack so far
 ------------------
 
 -   jquery.on-page-navigator - add one page navigation based on anchors, highlights current page position
--	positioner - keep element in fixed position during window scroll -> WIP
