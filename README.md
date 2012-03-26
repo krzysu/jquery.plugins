@@ -8,3 +8,9 @@ In the pack so far
 ------------------
 
 -   jquery.on-page-navigator - add one page navigation based on anchors, highlights current page position
+
+
+* * *
+Copyright (c) 2012 Krzysztof Urbas (@krzysu).
+
+My __jquery.plugins__ contained in this repository are all available under the MIT license.
