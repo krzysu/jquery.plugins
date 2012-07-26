@@ -1,19 +1,20 @@
 #
 # jquery.on-page-navigator
 # desc: add one page navigation based on anchors, highlights current page position
-# version: 0.1
+# version: 0.2
 # requires: jQuery 1.7+
 
 # how to use?
-# init: 		$(parent_selector).onPageNavigator(options)
-# destroy: 	$(parent_selector).onPageNavigator('destroy')
+# init:     $(parent_selector).onPageNavigator(options)
+# destroy:  $(parent_selector).onPageNavigator('destroy')
 
 # options:
-# 	speed: 1000                   // speed of slide
-#   topOffset: 0                  // top offset of destination position
-#   callbackBefore: (el) ->       // callback before slide begins, gets raw clicked element
-#   callbackAfter: (el) ->        // callback after slide ends, gets raw clicked element
-#
+#   speed: 1000                      // speed of autoscroll
+#   topOffset: 0                     // top offset of destination position
+#   callbackBefore: (el) ->          // callback before autoscroll begins, gets raw clicked element
+#   callbackAfter: (el) ->           // callback after autoscroll ends, gets raw clicked element
+#   callbackGetHighlight: (el) ->    // callback when current navigation element is highlighted, gets raw current element
+#   callbackLostHighlight: ->        // callback when all elements lost highlight, means window is outside of any element in page navigation
 
 
 $ = jQuery
@@ -34,8 +35,10 @@ methods =
     defaults =
       speed: 1000,
       topOffset: 0,
-      callbackBefore: () ->
-      callbackAfter: () ->
+      callbackBefore: ->
+      callbackAfter: ->
+      callbackGetHighlight: ->
+      callbackLostHighlight: ->
 
     settings = $.extend({}, defaults, options)
     navigator = new PageNavigator(@, settings)
@@ -94,9 +97,12 @@ class PageNavigator
     
     if( activeEl != null )
       $parent.find('a').removeClass('active')
-      $parent.find('a[href=' + activeEl + ']').addClass('active')
+      $toHighlight = $parent.find('a[href=' + activeEl + ']')
+      $toHighlight.addClass('active')
+      @settings.callbackGetHighlight( $toHighlight[0] )
     else
       $parent.find('a').removeClass('active')
+      @settings.callbackLostHighlight()
 
   destroy: () ->
     $(@parent).off '.navigator'

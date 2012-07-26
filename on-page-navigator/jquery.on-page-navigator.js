@@ -1,19 +1,20 @@
-// #
-// # jquery.on-page-navigator
-// # desc: add one page navigation based on anchors, highlights current page position
-// # version: 0.1
-// # requires: jQuery 1.7+
+//
+// jquery.on-page-navigator
+// desc: add one page navigation based on anchors, highlights current page position
+// version: 0.2
+// requires: jQuery 1.7+
 
-// # how to use?
-// # init:     $(parent_selector).onPageNavigator(options)
-// # destroy:  $(parent_selector).onPageNavigator('destroy')
+// how to use?
+// init:     $(parent_selector).onPageNavigator(options)
+// destroy:  $(parent_selector).onPageNavigator('destroy')
 
-// # options:
-// #   speed: 1000                   // speed of slide
-// #   topOffset: 0                  // top offset of destination position
-// #   callbackBefore: (el) ->       // callback before slide begins, gets raw clicked element
-// #   callbackAfter: (el) ->        // callback after slide ends, gets raw clicked element
-// #
+// options:
+//   speed: 1000                      // speed of autoscroll
+//   topOffset: 0                     // top offset of destination position
+//   callbackBefore: (el) ->          // callback before autoscroll begins, gets raw clicked element
+//   callbackAfter: (el) ->           // callback after autoscroll ends, gets raw clicked element
+//   callbackGetHighlight: (el) ->    // callback when current navigation element is highlighted, gets raw current element
+//   callbackLostHighlight: ->        // callback when all elements lost highlight, means window is outside of any element in page navigation
 
 (function() {
   var $, PageNavigator, methods, navigator;
@@ -39,7 +40,9 @@
         speed: 1000,
         topOffset: 0,
         callbackBefore: function() {},
-        callbackAfter: function() {}
+        callbackAfter: function() {},
+        callbackGetHighlight: function() {},
+        callbackLostHighlight: function() {}
       };
       settings = $.extend({}, defaults, options);
       navigator = new PageNavigator(this, settings);
@@ -96,7 +99,7 @@
     };
 
     PageNavigator.prototype.highlight = function(win, ids) {
-      var $parent, activeEl, bottom, id, scroll, top, _i, _len;
+      var $parent, $toHighlight, activeEl, bottom, id, scroll, top, _i, _len;
       scroll = $(win).scrollTop();
       activeEl = null;
       $parent = $(this.parent);
@@ -104,13 +107,18 @@
         id = ids[_i];
         top = $(id).offset().top - this.settings.topOffset - 10;
         bottom = $(id).offset().top + $(id).outerHeight();
-        if (scroll > top && scroll < bottom) activeEl = id;
+        if (scroll > top && scroll < bottom) {
+          activeEl = id;
+        }
       }
       if (activeEl !== null) {
         $parent.find('a').removeClass('active');
-        return $parent.find('a[href=' + activeEl + ']').addClass('active');
+        $toHighlight = $parent.find('a[href=' + activeEl + ']');
+        $toHighlight.addClass('active');
+        return this.settings.callbackGetHighlight($toHighlight[0]);
       } else {
-        return $parent.find('a').removeClass('active');
+        $parent.find('a').removeClass('active');
+        return this.settings.callbackLostHighlight();
       }
     };
 
