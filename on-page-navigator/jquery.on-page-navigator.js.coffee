@@ -94,10 +94,15 @@ class PageNavigator
 
       if scroll > top && scroll < bottom
         activeEl = id
-    
+
     if( activeEl != null )
+
+      $activeEl = $parent.find('a[href=' + activeEl + ']')
+      if $activeEl.hasClass('active')
+        return
+
       $parent.find('a').removeClass('active')
-      $toHighlight = $parent.find('a[href=' + activeEl + ']')
+      $toHighlight = $activeEl
       $toHighlight.addClass('active')
       @settings.callbackGetHighlight( $toHighlight[0] )
     else

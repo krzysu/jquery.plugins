@@ -16,6 +16,7 @@
 //   callbackGetHighlight: (el) ->    // callback when current navigation element is highlighted, gets raw current element
 //   callbackLostHighlight: ->        // callback when all elements lost highlight, means window is outside of any element in page navigation
 
+
 (function() {
   var $, PageNavigator, methods, navigator;
 
@@ -99,7 +100,7 @@
     };
 
     PageNavigator.prototype.highlight = function(win, ids) {
-      var $parent, $toHighlight, activeEl, bottom, id, scroll, top, _i, _len;
+      var $activeEl, $parent, $toHighlight, activeEl, bottom, id, scroll, top, _i, _len;
       scroll = $(win).scrollTop();
       activeEl = null;
       $parent = $(this.parent);
@@ -112,8 +113,12 @@
         }
       }
       if (activeEl !== null) {
+        $activeEl = $parent.find('a[href=' + activeEl + ']');
+        if ($activeEl.hasClass('active')) {
+          return;
+        }
         $parent.find('a').removeClass('active');
-        $toHighlight = $parent.find('a[href=' + activeEl + ']');
+        $toHighlight = $activeEl;
         $toHighlight.addClass('active');
         return this.settings.callbackGetHighlight($toHighlight[0]);
       } else {
