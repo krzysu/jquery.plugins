@@ -16,7 +16,6 @@
 //   callbackGetHighlight: (el) ->    // callback when current navigation element is highlighted, gets raw current element
 //   callbackLostHighlight: ->        // callback when all elements lost highlight, means window is outside of any element in page navigation
 
-
 (function() {
   var $, PageNavigator, methods, navigator;
 
@@ -68,7 +67,7 @@
       var _this = this;
       return $(this.parent).on('click.navigator', 'a', function(e) {
         e.preventDefault();
-        return _this.onNavigate(e.target);
+        return _this.onNavigate(e.currentTarget);
       });
     };
 

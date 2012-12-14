@@ -57,7 +57,7 @@ class PageNavigator
   initNavigateEvent: () ->
     $(@parent).on 'click.navigator', 'a', (e) =>
       e.preventDefault()
-      @onNavigate(e.target)
+      @onNavigate(e.currentTarget)
                       
   onNavigate: (el) ->
     $el = $(el)
